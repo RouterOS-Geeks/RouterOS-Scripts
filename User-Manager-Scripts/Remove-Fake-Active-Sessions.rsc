@@ -12,8 +12,7 @@
 :log info "UM-Check: Starting stuck session scan..."
 
 :foreach id in=$activeIDs do={
-    :local currentUp [/user-manager session get $id uptime]
-    :set ($sessionData->[:tostr $id]) $currentUp
+    :set ($sessionData->[:tostr $id]) [/user-manager session get $id uptime]
 }
 
 :delay 10s
@@ -23,9 +22,9 @@
 
         :local oldUp ($sessionData->[:tostr $id])
         :local newUp [/user-manager session get $id uptime]
-        :local suser [/user-manager session get $id user]
 
         :if ($oldUp = $newUp) do={
+            :local suser [/user-manager session get $id user]
             :log warning ("UM-Check: Removing stuck session for user: " . $suser)
             /user-manager session remove $id
         }
